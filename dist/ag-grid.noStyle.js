@@ -17954,7 +17954,7 @@ var DragService = (function () {
         this.onCommonMove(mouseEvent, this.mouseStartEvent);
     };
     DragService.prototype.onTouchUp = function (touchEvent) {
-        var touch = this.getFirstActiveTouch(touchEvent.targetTouches);
+        var touch = this.getFirstActiveTouch(touchEvent.changedTouches);
         // i haven't worked this out yet, but there is no matching touch
         // when we get the touch up event. to get around this, we swap in
         // the last touch. this is a hack to 'get it working' while we
@@ -27547,11 +27547,14 @@ var InputTextFloatingFilterComp = (function (_super) {
         this.currentParentModel = params.currentParentModel;
         var debounceMs = params.debounceMs != null ? params.debounceMs : 500;
         var toDebounce = utils_1._.debounce(this.syncUpWithParentFilter.bind(this), debounceMs);
-        this.addDestroyableEventListener(this.eColumnFloatingFilter, 'input', toDebounce);
-        this.addDestroyableEventListener(this.eColumnFloatingFilter, 'keypress', toDebounce);
-        this.addDestroyableEventListener(this.eColumnFloatingFilter, 'keydown', toDebounce);
+        this.addDestroyableEventListener(this.eColumnFloatingFilter, "input", toDebounce);
+        this.addDestroyableEventListener(this.eColumnFloatingFilter, "keypress", toDebounce);
+        this.addDestroyableEventListener(this.eColumnFloatingFilter, "keydown", toDebounce);
         var columnDef = params.column.getDefinition();
-        if (columnDef.filterParams && columnDef.filterParams.filterOptions && columnDef.filterParams.filterOptions.length === 1 && columnDef.filterParams.filterOptions[0] === 'inRange') {
+        if (columnDef.filterParams &&
+            columnDef.filterParams.filterOptions &&
+            columnDef.filterParams.filterOptions.length === 1 &&
+            columnDef.filterParams.filterOptions[0] === "inRange") {
             this.eColumnFloatingFilter.readOnly = true;
         }
     };
@@ -27559,7 +27562,7 @@ var InputTextFloatingFilterComp = (function (_super) {
         if (this.equalModels(this.lastKnownModel, parentModel)) {
             // ensure column floating filter text is blanked out when both ranges are empty
             if (!this.lastKnownModel && !parentModel) {
-                this.eColumnFloatingFilter.value = '';
+                this.eColumnFloatingFilter.value = "";
             }
             return;
         }
@@ -27608,7 +27611,7 @@ var InputTextFloatingFilterComp = (function (_super) {
             utils_1._.referenceCompare(left.filterType, right.filterType));
     };
     __decorate([
-        componentAnnotations_1.RefSelector('eColumnFloatingFilter'),
+        componentAnnotations_1.RefSelector("eColumnFloatingFilter"),
         __metadata("design:type", HTMLInputElement)
     ], InputTextFloatingFilterComp.prototype, "eColumnFloatingFilter", void 0);
     return InputTextFloatingFilterComp;
@@ -27621,7 +27624,7 @@ var TextFloatingFilterComp = (function (_super) {
     }
     TextFloatingFilterComp.prototype.asFloatingFilterText = function (parentModel) {
         if (!parentModel) {
-            return '';
+            return "";
         }
         return parentModel.filter;
     };
@@ -27630,7 +27633,7 @@ var TextFloatingFilterComp = (function (_super) {
         return {
             type: currentParentModel.type,
             filter: this.eColumnFloatingFilter.value,
-            filterType: 'text'
+            filterType: "text"
         };
     };
     return TextFloatingFilterComp;
@@ -27694,7 +27697,7 @@ var DateFloatingFilterComp = (function (_super) {
             type: currentParentModel.type,
             dateFrom: filterValueText,
             dateTo: currentParentModel ? currentParentModel.dateTo : null,
-            filterType: 'date'
+            filterType: "date"
         };
     };
     DateFloatingFilterComp.prototype.onParentModelChanged = function (parentModel) {
@@ -27704,11 +27707,11 @@ var DateFloatingFilterComp = (function (_super) {
                 dateComponent.setDate(null);
                 return;
             }
-            dateComponent.setDate(utils_1._.parseYyyyMmDdToDate(parentModel.dateFrom, '-'));
+            dateComponent.setDate(utils_1._.parseYyyyMmDdToDate(parentModel.dateFrom, "-"));
         });
     };
     __decorate([
-        context_1.Autowired('componentRecipes'),
+        context_1.Autowired("componentRecipes"),
         __metadata("design:type", componentRecipes_1.ComponentRecipes)
     ], DateFloatingFilterComp.prototype, "componentRecipes", void 0);
     return DateFloatingFilterComp;
@@ -27722,30 +27725,28 @@ var NumberFloatingFilterComp = (function (_super) {
     NumberFloatingFilterComp.prototype.asFloatingFilterText = function (parentModel) {
         var rawParentModel = this.currentParentModel();
         if (parentModel == null && rawParentModel == null) {
-            return '';
+            return "";
         }
-        if (parentModel == null && rawParentModel != null && rawParentModel.type !== 'inRange') {
+        if (parentModel == null && rawParentModel != null && rawParentModel.type !== "inRange") {
             this.eColumnFloatingFilter.readOnly = false;
-            return '';
+            return "";
         }
-        if (rawParentModel != null && rawParentModel.type === 'inRange') {
+        if (rawParentModel != null && rawParentModel.type === "inRange") {
             this.eColumnFloatingFilter.readOnly = true;
             var number_1 = this.asNumber(rawParentModel.filter);
             var numberTo = this.asNumber(rawParentModel.filterTo);
-            return (number_1 ? number_1 + '' : '') +
-                '-' +
-                (numberTo ? numberTo + '' : '');
+            return (number_1 ? number_1 + "" : "") + "-" + (numberTo ? numberTo + "" : "");
         }
         var number = this.asNumber(parentModel.filter);
         this.eColumnFloatingFilter.readOnly = false;
-        return number != null ? number + '' : '';
+        return number != null ? number + "" : "";
     };
     NumberFloatingFilterComp.prototype.asParentModel = function () {
         var currentParentModel = this.currentParentModel();
         var filterValueNumber = this.asNumber(this.eColumnFloatingFilter.value);
         var filterValueText = this.eColumnFloatingFilter.value;
         var modelFilterValue = null;
-        if (filterValueNumber == null && filterValueText === '') {
+        if (filterValueNumber == null && filterValueText === "") {
             modelFilterValue = null;
         }
         else if (filterValueNumber == null) {
@@ -27758,14 +27759,14 @@ var NumberFloatingFilterComp = (function (_super) {
             type: currentParentModel.type,
             filter: modelFilterValue,
             filterTo: !currentParentModel ? null : currentParentModel.filterTo,
-            filterType: 'number'
+            filterType: "number"
         };
     };
     NumberFloatingFilterComp.prototype.asNumber = function (value) {
         if (value == null) {
             return null;
         }
-        if (value === '') {
+        if (value === "") {
             return null;
         }
         var asNumber = Number(value);
@@ -27786,25 +27787,22 @@ var SetFloatingFilterComp = (function (_super) {
     };
     SetFloatingFilterComp.prototype.asFloatingFilterText = function (parentModel) {
         if (!parentModel)
-            return '';
+            return "";
         // also supporting old filter model for backwards compatibility
-        var values = (parentModel instanceof Array) ? parentModel : parentModel.values;
+        var values = parentModel instanceof Array ? parentModel : parentModel.values;
         if (values.length === 0) {
-            return '';
+            return "";
         }
-        var arrayToDisplay = values.length > 10 ? values.slice(0, 10).concat('...') : values;
+        var arrayToDisplay = values.length > 10 ? values.slice(0, 10).concat("...") : values;
         return "(" + values.length + ") " + arrayToDisplay.join(",");
     };
     SetFloatingFilterComp.prototype.asParentModel = function () {
-        if (this.eColumnFloatingFilter.value == null || this.eColumnFloatingFilter.value === '') {
-            return {
-                values: [],
-                filterType: 'set'
-            };
+        if (this.eColumnFloatingFilter.value == null || this.eColumnFloatingFilter.value === "") {
+            return null;
         }
         return {
             values: this.eColumnFloatingFilter.value.split(","),
-            filterType: 'set'
+            filterType: "set"
         };
     };
     SetFloatingFilterComp.prototype.equalModels = function (left, right) {
